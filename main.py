@@ -41,4 +41,4 @@ def manual_scan():
 def latest_bulletin():
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
-    c.execute("SELECT *
+    c.execute("SELECT * FROM bulletins ORDER BY created_at DESC LIMIT 1")
