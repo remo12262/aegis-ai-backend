@@ -1,10 +1,6 @@
-import sys
-sys.path.insert(0, "/opt/render/project/src")
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-import sys, os
-sys.path.insert(0, os.path.dirname(__file__))
 from Router import assessment, report, defense, governance
 import json, sqlite3, os
 from scanner import run_full_scan, init_db, DB_PATH
@@ -45,48 +41,4 @@ def manual_scan():
 def latest_bulletin():
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
-    c.execute("SELECT * FROM bulletins ORDER BY created_at DESC LIMIT 1")
-    row = c.fetchone()
-    conn.close()
-    if not row:
-        return JSONResponse(status_code=404, content={"error": "Nessun bollettino. Esegui /scan"})
-    items = json.loads(row[4])
-    return {
-        "id": row[0], "week_label": row[1], "overall_level": row[2],
-        "executive_summary": row[3], "total_items": len(items),
-        "items": items, "created_at": row[5],
-    }
-
-@app.get("/bulletin/history")
-def bulletin_history():
-    conn = sqlite3.connect(DB_PATH)
-    c = conn.cursor()
-    c.execute("SELECT id,week_label,overall_level,summary,created_at FROM bulletins ORDER BY created_at DESC LIMIT 20")
-    rows = c.fetchall()
-    conn.close()
-    return [{"id":r[0],"week":r[1],"level":r[2],"summary":r[3][:120]+"...","date":r[4]} for r in rows]
-
-@app.get("/stats")
-def stats():
-    conn = sqlite3.connect(DB_PATH)
-    c = conn.cursor()
-    c.execute("SELECT COUNT(*) FROM raw_items"); total_raw = c.fetchone()[0]
-    c.execute("SELECT COUNT(*) FROM analyzed_items"); total_analyzed = c.fetchone()[0]
-    c.execute("SELECT COUNT(*) FROM bulletins"); total_bulletins = c.fetchone()[0]
-    conn.close()
-    return {"raw_items_collected": total_raw, "items_analyzed": total_analyzed, "bulletins_generated": total_bulletins}
-
-import anthropic as _anthropic
-
-@app.post("/api/analyze")
-async def analyze(request: dict):
-    prompt = request.get("prompt", "")
-    if not prompt:
-        return JSONResponse(status_code=400, content={"error": "Prompt mancante"})
-    client = _anthropic.Anthropic()
-    message = client.messages.create(
-        model="claude-sonnet-4-20250514",
-        max_tokens=2000,
-        messages=[{"role": "user", "content": prompt}]
-    )
-    return {"result": message.content[0].text}
+    c.execute("SELECT *
