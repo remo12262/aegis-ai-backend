@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from routers import assessment, report, defense, governance
+from Router import assessment, report, defense, governance
 import json, sqlite3, os
 from scanner import run_full_scan, init_db, DB_PATH
 
