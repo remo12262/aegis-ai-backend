@@ -1,7 +1,9 @@
+import sys, os
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from Router import assessment, report, defense, governance
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from Router import assessment, report, defense, governance
 import json, sqlite3, os
 from scanner import run_full_scan, init_db, DB_PATH
 
