@@ -1,3 +1,5 @@
+import sys
+sys.path.insert(0, "/opt/render/project/src")
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
